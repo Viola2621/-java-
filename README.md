@@ -1,54 +1,58 @@
-<header>
+编写一个java语言程序，要求通过运行代码生成的GUI面板窗口内容能与navicat中建立的数据库表格相连接，实现在窗口中点击相应部分时能通过调用数据库表中的相应数据显示对应的内容。
+现我在navicat中建立了一个连接为E1，在mybase数据库中建立了一个objects的数据库表，有物品、价格、生产日期、到期日期、库存5个栏，物品包括口香糖，可口可乐，啤酒，棒棒糖，矿泉水，笔记本，签字笔，酸奶，面包，香烟，鲜牛奶，手纸12个，其他信息也都在表中。
+代码主类名为PingJiaSupermarket,要求代码运行时生成的窗口面积恰能覆盖全屏幕，背景由蓝色和白色大菱形组成，窗口标题为“软工222班 黄宏洋 2218140214”，页面窗口上显示四个楷体大字“平价超市”，四个大字下面有稍小一点稍靠右的四个字“欢迎光临”，在整个窗口中间靠下有一图标为“进入”，单击“进入”后进入新的铺满屏幕的以3*4的格式的窗口，此窗口以浅黄色为背景，粉色做点缀，其上依次显示12种物品，每种物品名称为宋体加粗显示，每种物品名下方以比物品名小一点的字号显示价格，价格下面再以小一点的字号有一个“详情”，单击“详情”可通过数据库的查询功能查询到生产日期、到期日期、库存。备注：显示的都是数据库表objects中的数据。
+用户可以单击新页面上12种物体的任意一种，可一次性选择多种物品，在页面右侧有一栏为“已选商品”，已选商品下面显示用户点击到的每一个物品，并在下面计算出用户点击到的所有物品的价格总和，下面还有一图标为“结算”，点击结算可弹出一个新的窗口上面显示“购买成功，平价超市欢迎您下次光临！”。
+整个代码的布局如下所示：
+1. `PingJiaSupermarket`类：这是程序的入口点，初始化了主窗口并显示欢迎界面。它包含了与用户界面交互的方法，如进入主页、连接数据库和加载商品数据等。
+2. `DatabaseConnection`类：用于建立与数据库的连接。
+3. `LoadItemData`类：负责加载-商品数据并显示在主界面中。
+4. `ItemDetails`类：处理物品详情和选择物品的逻辑操作。它显示物品的详细信息，并将选择的物品添加到购物车中。
+5. `CheckoutDialog`类：显示结算对话框和处理结算操作。它在购买成功时显示消息对话框，并重置购物车。
+这些类之间相互协作，共同构成了一个简单的平价超市应用程序。用户通过主窗口进入应用程序，在主界面上可以查看商品列表和详情，选择商品加入购物车，并进行结算操作。整个应用程序的布局和功能在这些类中进行定义和实现。
 
-<!--
-  <<< Author notes: Course header >>>
-  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
-  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
-  Add your open source license, GitHub uses MIT license.
--->
+在提供的代码中，连接数据库的代码位于两个类中：PingJiaSupermarket和ItemPage。
+在PingJiaSupermarket类中，数据库连接的方法是connectToDatabase()。它在initializeGUI()方法中被调用，用于建立与数据库的连接。
 
-# GitHub Pages
+在代码中，查询数据库的操作主要集中在以下两个方法中：
+1. `LoadItemData`类中的`loadItemData()`方法：该方法在加载商品数据时执行查询操作。使用`Statement`对象执行SQL查询语句`SELECT * FROM objects`，并通过`ResultSet`对象获取查询结果，将物品名称和价格设置到相应的标签中。
+2. `ItemDetails`类中的`showItemDetails()`方法：该方法在显示物品详情时执行查询操作。使用`PreparedStatement`对象执行SQL查询语句`SELECT * FROM objects WHERE 物品 = ?`，通过设置参数`itemName`来指定要查询的物品名称。然后通过`ResultSet`对象获取查询结果，从中提取物品的生产日期、到期日期和库存等详细信息，并通过消息对话框显示给用户。
+这些查询操作涉及到数据库连接、SQL语句的执行和结果集的处理。通过执行查询操作，可以从数据库中获取所需的商品信息，并在用户界面上进行展示或其他相应的逻辑处理。
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+在给出的代码中，主要的更新部分是以下几个类中的方法： 
+1. `PingJiaSupermarket`类中的`showItemPage()`方法：该方法用于更新主界面，展示商品信息和购物车信息。在该方法中，通过更新标签和按钮的文本、添加事件监听器等操作，实现了商品信息的展示和购物车功能的更新。
+2. `ItemDetails`类中的`selectItem()`方法：该方法在用户选择商品后执行，用于更新购物车信息。通过获取所选商品的名称和价格，并在购物车面板中添加相应的标签，更新总价标签的显示。
+3. `ItemDetails`类中的`showCheckoutDialog()`方法：该方法在用户点击结算按钮后执行，显示结算对话框。在结算对话框中，展示购买成功的消息，并调用`resetCart()`方法重置购物车信息。
+4. `CheckoutDialog`类中的`resetCart()`方法：该方法用于重置购物车面板，清空已选商品的显示并将总价设置为0。通过移除购物车面板中的组件，并重新添加购物车标签、总价标签和结算按钮，实现购物车信息的重置。
+这些更新部分的作用是实现了用户选择商品、添加到购物车、结算等功能的逻辑处理和界面更新。通过更新界面和购物车信息，用户可以方便地浏览商品、选择购买，并及时查看购物车中的商品和总价信息。
 
-</header>
+在给出的代码中，使用了以下组件：
+1. `JFrame`：表示整个窗口框架。
+2. `JPanel`：用于创建面板，作为容器组件。
+3. `JLabel`：用于显示文本或图像标签。
+4. `JButton`：用于创建按钮，添加事件监听器处理用户点击操作。
+5. `JTextArea`：用于显示多行文本。
+6. `GridLayout`：用于创建网格布局，将组件按行列排列。
+7. `BoxLayout`：用于创建盒式布局，将组件沿一个方向依次排列。
+8. `SwingConstants`：定义了标签文本的对齐方式。
+9. `Font`：用于设置组件的字体样式。
+10. `Color`：用于设置组件的背景色。
+11. `Dimension`：用于设置组件的尺寸。
+12. `JOptionPane`：用于显示对话框，例如结算对话框和购买成功提示。
+这些组件被用于创建窗口、标签、按钮、面板以及对话框等，通过组合和布局这些组件，实现了用户界面的构建和交互功能的实现。
 
-<!--
-  <<< Author notes: Step 1 >>>
-  Choose 3-5 steps for your course.
-  The first step is always the hardest, so pick something easy!
-  Link to docs.github.com for further explanations.
-  Encourage users to open new tabs for steps!
--->
+在给出的代码中，搜索功能位于`ItemDetails`类的`showItemDetails`方法中。该方法通过执行SQL查询语句，根据物品名称在数据库中查找对应的物品信息，包括生产日期、到期日期和库存。然后，使用`JOptionPane.showMessageDialog`方法显示查找到的物品详情对话框，展示给用户。通过在`ItemDetails`类的其他方法中调用`showItemDetails`方法，可以实现用户点击物品详情按钮后的物品信息查询和展示功能。
+initializeGUI方法初始化了蓝色页面的界面组件和事件监听器，showItemPage方法显示了黄色页面的商品界面，并加载商品数据。
 
-## Step 1: Enable GitHub Pages
+    // 添加物品信息
+    String[] itemNames = {
+        "口香糖", "可口可乐", "啤酒", "棒棒糖", "矿泉水", "笔记本",
+        "签字笔", "酸奶", "面包", "香烟", "鲜牛奶", "手纸"
+    };
 
-_Welcome to GitHub Pages and Jekyll :tada:!_
+    int[] itemPrices = { 1, 2, 3, 1, 2, 5, 2, 3, 2, 6, 4, 1 };
 
-The first step is to enable GitHub Pages on this [repository](https://docs.github.com/en/get-started/quickstart/github-glossary#repository). When you enable GitHub Pages on a repository, GitHub takes the content that's on the main branch and publishes a website based on its contents.
+    for (int i = 0; i < 12; i++) {
+        itemLabels[i].setText(itemNames[i]);
+        priceLabels[i].setText("价格：" + itemPrices[i]);
+    }
 
-### :keyboard: Activity: Enable GitHub Pages
-
-1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
-1. Under your repository name, click **Settings**.
-1. Click **Pages** in the **Code and automation** section.
-1. Ensure "Deploy from a branch" is selected from the **Source** drop-down menu, and then select `main` from the **Branch** drop-down menu.
-1. Click the **Save** button.
-1. Wait about _one minute_ then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
-   > Turning on GitHub Pages creates a deployment of your repository. GitHub Actions may take up to a minute to respond while waiting for the deployment. Future steps will be about 20 seconds; this step is slower.
-   > **Note**: In the **Pages** of **Settings**, the **Visit site** button will appear at the top. Click the button to see your GitHub Pages site.
-
-<footer>
-
-<!--
-  <<< Author notes: Footer >>>
-  Add a link to get support, GitHub status page, code of conduct, license link.
--->
-
----
-
-Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
-
-&copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
-
-</footer>
